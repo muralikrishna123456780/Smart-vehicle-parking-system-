@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IoT Smart Parking System</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#05070c;color:#edf5ff;font-family:Arial,sans-serif;padding:20px}
+main{max-width:1050px;margin:auto}
+h1{text-align:center;color:#00d9f5;font-size:clamp(26px,5vw,42px);margin:15px 0 8px}
+.sub{text-align:center;color:#9eb0c9;margin-bottom:28px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.card,.slot{background:#0a1320;border:1px solid #20405c;border-radius:14px;padding:20px;text-align:center}
+.card h3{font-size:16px;margin:0 0 12px}
+.number{font-size:42px;font-weight:bold}
+.green{color:#00edaa}.red{color:#ff4058}.cyan{color:#00d9f5}
+h2{font-size:23px;margin-top:32px}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.slot{border:2px solid #ff4058}
+.slot.available{border-color:#00edaa}
+.slot h3{margin:5px 0 12px}
+.slot p{font-weight:bold;margin:0}
+.status{margin-top:25px;padding:17px;background:#0a1320;border-radius:12px;color:#b8c9dc;line-height:1.9}
+@media(max-width:600px){
+ body{padding:12px}.summary{grid-template-columns:1fr}
+ .slots{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>IoT Smart Parking System</h1>
+<p class="sub">Real-time Parking Management with ESP32</p>
+
+<section class="summary">
+ <div class="card">
+  <h3>Available Slots</h3>
+  <div class="number green" id="available">1</div>
+  <p>Out of 4 total slots</p>
+ </div>
+ <div class="card">
+  <h3>Occupied Slots</h3>
+  <div class="number red" id="occupied">3</div>
+  <p>Currently parked</p>
+ </div>
+ <div class="card">
+  <h3>Gate Status</h3>
+  <div class="number red" id="gate">Closed</div>
+  <p>Automatic gate</p>
+ </div>
+</section>
+
+<h2>Parking Layout — Real-time Status</h2>
+<section class="slots" id="slots"></section>
+
+<div class="status">
+ <div>● Dashboard: <span class="green">Online</span></div>
+ <div>● ESP32: <span id="esp" class="red">Not Connected</span></div>
+ <div>● Entry Sensor: <span id="entry">Waiting</span></div>
+ <div>● Exit Sensor: <span id="exit">Waiting</span></div>
+ <p>Parking capacity: 4 slots</p>
+</div>
+</main>
+
+<script>
+const parking = [true,true,true,false];
+
+function render(){
+ const count=parking.filter(Boolean).length;
+ document.getElementById('occupied').textContent=count;
+ document.getElementById('available').textContent=parking.length-count;
+
+ document.getElementById('slots').innerHTML=parking.map((busy,i)=>`
+  <div class="slot ${busy?'':'available'}">
+   <h3>Slot ${i+1}</h3>
+   <p class="${busy?'red':'green'}">
+    ${busy?'Occupied':'Available'}
+   </p>
+  </div>`).join('');
+}
+render();
+</script>
+</body>
+</html>
